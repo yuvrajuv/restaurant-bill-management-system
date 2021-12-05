@@ -2,7 +2,13 @@ from time import localtime
 from tkinter import*
 import random
 import time;
-
+from tkinter import simpledialog
+import smtplib;
+from email.mime.text import MIMEText;
+from email.mime.multipart import MIMEMultipart;
+from email.mime.base import MIMEBase;
+from email import encoders;
+from tkinter import messagebox
 root=Tk ()
 root.geometry("1600x800+0+0")
 root.title("Resturant Billing")
@@ -49,6 +55,35 @@ def btnEqualsInput():
     sumup= str(eval(operator))
     text_Input.set(sumup)
     operator=""
+def emailbill():
+    passwrd = simpledialog.askstring(title="Input",prompt="Enter Your G-Mail Passsword to Mail Invoice:",show = "*");
+    ne3 = simpledialog.askstring(title="Input",prompt="Enter users mail address to mail invoice");
+    from_user = "yuvvraajuvpandey@gmail.com";
+    to_user = ne3;
+    subject = "Invoice";
+    msg = MIMEMultipart();
+    msg["From"] = from_user;
+    msg["To"] = to_user;
+    msg["Subject"] = subject;
+    body = "Hi, \nYour e-bill has been generated. See details in below Attachment.\nFor any query, feel free to contact us.\nThank You";
+    msg.attach(MIMEText(body,"plain"));
+    file = "Documents\geek.txt";
+    attach = open(file,"rb");
+    p = MIMEBase("application","octet-stream");
+    p.set_payload((attach).read());        
+    encoders.encode_base64(p);
+    p.add_header('content-Disposition',"attachment; filename = "+file);
+    msg.attach(p);
+    text = msg.as_string();
+    server = smtplib.SMTP('smtp.gmail.com',587);             
+    server.starttls();
+    server.login(from_user,passwrd);
+    server.sendmail(from_user,to_user,text);
+    c = server.quit();
+    if c:
+        messagebox.showinfo("","Invoice has been Successfully mailed");
+    else:
+        messagebox.showinfo("","Sorry please check the Email again or other glitches");
 
 def Ref():
     x= random.randint(12908,50876)
@@ -63,7 +98,7 @@ def Ref():
     CoChicBurger = float(Chicken.get())
     CoCheese_Burger= float(Cheese.get())
 
-   
+
 
     CostofFries= CoF * 50
     CostofDrinks = CoD * 45
@@ -72,17 +107,20 @@ def Ref():
     CostChicken_Burger = CoChicBurger * 100
     CostCheese_Burger= CoCheese_Burger * 85
 
-    CostofMeals = "₹", str('%.2f' % (CostofFries + CostofDrinks + CostofFliet + CostofBurger + CostCheese_Burger + CostChicken_Burger))
+    subtotal=(CostofFries + CostofDrinks + CostofFliet + CostofBurger + CostCheese_Burger + CostChicken_Burger)
 
     PayTax=((CostofFries+ CostofDrinks + CostofFliet + CostofBurger + CostCheese_Burger + CostChicken_Burger)* 0.2)
 
-    TotalCost= (CostofFries+ CostofDrinks + CostofFliet + CostofBurger + CostCheese_Burger + CostChicken_Burger)
-
     Ser_Charge = ((CostofFries+ CostofDrinks + CostofFliet + CostofBurger + CostCheese_Burger + CostChicken_Burger)/99)
+    
+    subtotal2=(PayTax+ subtotal)
+    
+    TotalCost=(PayTax+ subtotal + Ser_Charge)
 
 
+    CostofMeals = "₹", str('%.2f' % subtotal)
     Service = "₹",str('%.2f'% Ser_Charge)
-    OverAllCost = "₹",str('%.2f'% (PayTax+ TotalCost + Ser_Charge))
+    OverAllCost = "₹",str('%.2f'% (TotalCost))
     PaidTax="₹",str('%.2f'% PayTax)
 
 
@@ -90,12 +128,43 @@ def Ref():
     Service_Charge.set(Service)
     Cost.set(CostofMeals)
     Tax.set(PaidTax)
-    SubTotal.set(CostofMeals)
+    SubTotal.set(subtotal2)
     Total.set(OverAllCost)
+    
+   
+    file = open('Documents\geek.txt','w')
+    file.write("\n\n******INVOICE******")
+    file.write("\n\nService Provider")
+    file.write("\n\nName : Yuvraj")
+    file.write("\nCity : Prayagraj")
+    file.write("\nState : Uttar Pradesh")
+    file.write("\nPost Code : 211008")
+    
+    file.write("\n\n******BILL DETAILS******")
+    file.write("\n\nReference Number : "+str(randomRef));
+    
+    file.write("\n\n   Name       Units    UnitCost  Amount\n")
+    file.write("\nCold Drinks\t"+str(CoD)+"\t45\t"+str(CostofDrinks));
+    file.write("\nFrench Fries\t"+str(CoF)+"\t50\t"+str(CostofFries));
+    file.write("\nVeg Burger\t"+str(CoBurger)+"\t65\t"+str(CostofBurger));
+    file.write("\nPaneer Filet\t"+str(CoFilet)+"\t125\t"+str(CostofFliet));
+    file.write("\nChicken Burger\t"+str(CoChicBurger)+"\t100\t"+str(CostChicken_Burger));
+    file.write("\nCheese Burger\t"+str(CoCheese_Burger)+"\t85\t"+str(CostCheese_Burger));
+    
+    file.write("\n\nCost Of Meals : "+str('%.2f'%subtotal));
+    file.write("\nService Charge : "+str('%.2f'%Ser_Charge));
+    file.write("\nGST : "+str('%.2f'%PayTax));
+    file.write("\nSub Total : "+str('%.2f'%subtotal2));
+    file.write("\n\nTotal Cost : "+str('%.2f'%TotalCost));
+    file.write("\n\nEmail: yuvvraajuvpandey@gmail.com")
+    file.write("\nDon't hesitate to contact us for any questions")
+    file.write("\n\n******Thank You, Visit Again******")
+    file.close()
+    
 
 def qExit():
     root.destroy()
-
+    
 def Reset():
     rand.set("")
     Fries.set("")
@@ -189,7 +258,7 @@ lblFries.grid(row=1,column=0)
 txtFries= Entry(f1,font=('arial',16,'bold'), textvariable=Fries, bd=10,insertwidth=4,bg="#ffffff",justify='right')
 txtFries.grid(row=1,column=1)
 
-lblBurger = Label(f1,font=('arial',16,'bold'), text="AlooTiki Burger", bd=16,anchor='w')
+lblBurger = Label(f1,font=('arial',16,'bold'), text="Veg Burger", bd=16,anchor='w')
 lblBurger.grid(row=2,column=0)
 
 txtBurger= Entry(f1,font=('arial',16,'bold'), textvariable=Burger, bd=10,insertwidth=4,bg="#ffffff",justify='right')
@@ -261,13 +330,15 @@ txtTotalCost.grid(row=5,column=3)
 ######-------------------------------------BUTTONS---------------------------------------------------------------
 
 btnTotal= Button(f1,padx=16,pady=8,bd=16,fg="black",font=('arial',16,'bold'),width=10,text="Total",bg="#BCEE68",
-                 command= Ref).grid(row=7,column=1)
+                 command= Ref).grid(row=7,column=0)
+
+btnbill= Button(f1,padx=16,pady=8,bd=16,fg="black",font=('arial',16,'bold'),width=10,text="Send Bill",bg="#BCEE68",
+                 command= emailbill).grid(row=7,column=1)
 
 btnReset= Button(f1,padx=16,pady=8,bd=16,fg="black",font=('arial',16,'bold'),width=10,text="Reset",bg="#BCEE68",
                  command= Reset).grid(row=7,column=2)
 
 btnExit= Button(f1,padx=16,pady=8,bd=16,fg="black",font=('arial',16,'bold'),width=10,text="Exit",bg="#BCEE68",
                  command= qExit).grid(row=7,column=3)
-
 
 root.mainloop()
