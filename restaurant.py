@@ -67,7 +67,7 @@ def emailbill():
     msg["Subject"] = subject;
     body = "Hi, \nYour e-bill has been generated. See details in below Attachment.\nFor any query, feel free to contact us.\nThank You";
     msg.attach(MIMEText(body,"plain"));
-    file = "Documents\geek.txt";
+    file = "Documents\invoice.txt";
     attach = open(file,"rb");
     p = MIMEBase("application","octet-stream");
     p.set_payload((attach).read());        
@@ -132,7 +132,7 @@ def Ref():
     Total.set(OverAllCost)
     
    
-    file = open('Documents\geek.txt','w')
+    file = open('Documents\invoice.txt','w')
     file.write("\n\n******INVOICE******")
     file.write("\n\nService Provider")
     file.write("\n\nName : Yuvraj")
