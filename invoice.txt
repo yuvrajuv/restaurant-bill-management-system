@@ -1,0 +1,35 @@
+
+
+******INVOICE******
+
+Service Provider
+
+Name : Yuvraj
+City : Prayagraj
+State : Uttar Pradesh
+Post Code : 211008
+
+******BILL DETAILS******
+
+Reference Number : 47405
+
+   Name       Units    UnitCost  Amount
+
+Cold Drinks	1.0	45	45.0
+French Fries	1.0	50	50.0
+Veg Burger	1.0	65	65.0
+Paneer Filet	1.0	125	125.0
+Chicken Burger	1.0	100	100.0
+Cheese Burger	1.0	85	85.0
+
+Cost Of Meals : 470.00
+Service Charge : 4.75
+GST : 94.00
+Sub Total : 564.00
+
+Total Cost : 568.75
+
+Email: yuvvraajuvpandey@gmail.com
+Don't hesitate to contact us for any questions
+
+******Thank You, Visit Again******
